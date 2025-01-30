@@ -1,29 +1,7 @@
-/**
- * @licstart The following is the entire license notice for the
- * JavaScript code in this page
- *
- * Copyright 2024 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @licend The above is the entire license notice for the
- * JavaScript code in this page
- */
 
 /******/ // The require scope
 /******/ var __webpack_require__ = {};
 /******/ 
-/************************************************************************/
 /******/ /* webpack/runtime/define property getters */
 /******/ (() => {
 /******/ 	// define getter functions for harmony exports
@@ -41,7 +19,6 @@
 /******/ 	__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ })();
 /******/ 
-/************************************************************************/
 var __webpack_exports__ = {};
 
 // EXPORTS
@@ -52,6 +29,7 @@ __webpack_require__.d(__webpack_exports__, {
 });
 
 ;// ./web/ui_utils.js
+let printStat;
 const DEFAULT_SCALE_VALUE = "auto";
 const DEFAULT_SCALE = 1.0;
 const DEFAULT_SCALE_DELTA = 1.1;
@@ -836,6 +814,11 @@ const defaultOptions = {
     value: "compressed.tracemonkey-pldi-09.pdf",
     kind: OptionKind.VIEWER
   };
+  defaultOptions.defaultPrintStat = {
+    value: "can",
+    kind: OptionKind.VIEWER
+  };
+
   defaultOptions.sandboxBundleSrc = {
     value: "../build/pdf.sandbox.mjs",
     kind: OptionKind.VIEWER
@@ -4315,19 +4298,9 @@ class CaretBrowsingMode {
 
 ;// ./web/download_manager.js
 
-function download(blobUrl, filename) {
-  const a = document.createElement("a");
-  if (!a.click) {
-    throw new Error('DownloadManager: "a.click()" is not supported.');
-  }
-  a.href = blobUrl;
-  a.target = "_parent";
-  if ("download" in a) {
-    a.download = filename;
-  }
-  (document.body || document.documentElement).append(a);
-  a.click();
-  a.remove();
+// comevisit
+function download() {
+  alert("Cant Download")
 }
 class DownloadManager {
   #openBlobUrls = new WeakMap();
@@ -4335,50 +4308,15 @@ class DownloadManager {
     const blobUrl = URL.createObjectURL(new Blob([data], {
       type: contentType
     }));
-    download(blobUrl, filename);
+    download();
   }
   openOrDownloadData(data, filename, dest = null) {
-    const isPdfData = isPdfFile(filename);
-    const contentType = isPdfData ? "application/pdf" : "";
-    if (isPdfData) {
-      let blobUrl = this.#openBlobUrls.get(data);
-      if (!blobUrl) {
-        blobUrl = URL.createObjectURL(new Blob([data], {
-          type: contentType
-        }));
-        this.#openBlobUrls.set(data, blobUrl);
-      }
-      let viewerUrl;
-      viewerUrl = "?file=" + encodeURIComponent(blobUrl + "#" + filename);
-      if (dest) {
-        viewerUrl += `#${escape(dest)}`;
-      }
-      try {
-        window.open(viewerUrl);
-        return true;
-      } catch (ex) {
-        console.error("openOrDownloadData:", ex);
-        URL.revokeObjectURL(blobUrl);
-        this.#openBlobUrls.delete(data);
-      }
-    }
-    this.downloadData(data, filename, contentType);
+    
     return false;
   }
   download(data, url, filename) {
-    let blobUrl;
-    if (data) {
-      blobUrl = URL.createObjectURL(new Blob([data], {
-        type: "application/pdf"
-      }));
-    } else {
-      if (!createValidAbsoluteUrl(url, "http://example.com")) {
-        console.error(`download - not a valid URL: ${url}`);
-        return;
-      }
-      blobUrl = url + "#pdfjs.action=download";
-    }
-    download(blobUrl, filename);
+    
+    download();
   }
 }
 
@@ -4428,7 +4366,7 @@ class EditorUndoBar {
       this.#container.addEventListener("contextmenu", noContextMenu, opts);
       this.#closeButton.addEventListener("click", boundHide, opts);
       this.#eventBus._on("beforeprint", boundHide, opts);
-      this.#eventBus._on("download", boundHide, opts);
+      // this.#eventBus._on("download", boundHide, opts);
     }
     this.hide();
     if (typeof messageData === "string") {
@@ -7470,16 +7408,20 @@ let overlayManager = null;
 let viewerApp = {
   initialized: false
 };
+//this function render pages 
 function renderPage(activeServiceOnEntry, pdfDocument, pageNumber, size, printResolution, optionalContentConfigPromise, printAnnotationStoragePromise) {
   const scratchCanvas = activeService.scratchCanvas;
   const PRINT_UNITS = printResolution / PixelsPerInch.PDF;
   scratchCanvas.width = Math.floor(size.width * PRINT_UNITS);
   scratchCanvas.height = Math.floor(size.height * PRINT_UNITS);
   const ctx = scratchCanvas.getContext("2d");
+
+  // Clear the canvas with white background
   ctx.save();
   ctx.fillStyle = "rgb(255, 255, 255)";
   ctx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
   ctx.restore();
+
   return Promise.all([pdfDocument.getPage(pageNumber), printAnnotationStoragePromise]).then(function ([pdfPage, printAnnotationStorage]) {
     const renderContext = {
       canvasContext: ctx,
@@ -7493,14 +7435,34 @@ function renderPage(activeServiceOnEntry, pdfDocument, pageNumber, size, printRe
       optionalContentConfigPromise,
       printAnnotationStorage
     };
+
     const renderTask = pdfPage.render(renderContext);
-    return renderTask.promise.catch(reason => {
+    return renderTask.promise.then(() => {
+      // Draw watermark after the page is rendered
+      drawWatermark(ctx, scratchCanvas.width, scratchCanvas.height);
+    }).catch(reason => {
       if (!(reason instanceof RenderingCancelledException)) {
         console.error(reason);
       }
       throw reason;
     });
   });
+}
+
+function drawWatermark(ctx, canvasWidth, canvasHeight) {
+  ctx.save();
+  ctx.globalAlpha = 0.5; // Set transparency for the watermark
+  ctx.font = "80px Arial";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; // Watermark color
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  // Rotate the watermark text
+  ctx.translate(canvasWidth / 2, canvasHeight / 2);
+  ctx.rotate(-Math.PI / 4); // Rotate by 45 degrees
+  ctx.fillText("Baal AMar", 0, 0); // Watermark text
+
+  ctx.restore();
 }
 class PDFPrintService {
   constructor({
@@ -7622,8 +7584,17 @@ class PDFPrintService {
     }
   }
 }
+
+// dhrubawaits
+
 const print = window.print;
 window.print = function () {
+  
+  if (printStat != "can") {
+    alert("You Don't Have the permission to Print...");
+    return;
+  }
+  
   if (activeService) {
     console.warn("Ignored window.print() because of a pending print job.");
     return;
@@ -12784,10 +12755,11 @@ class Toolbar {
     }, {
       element: options.print,
       eventName: "print"
-    }, {
-      element: options.download,
-      eventName: "download"
     }, 
+    // {
+    //   element: options.download,
+    //   eventName: "download"
+    // }, 
     // {
     //   element: options.editorFreeTextButton,
     //   eventName: "switchannotationeditormode",
@@ -13539,6 +13511,7 @@ const PDFViewerApplication = {
     const queryString = document.location.search.substring(1);
     const params = parseQueryString(queryString);
     file = params.get("file") ?? AppOptions.get("defaultUrl");
+    printStat = params.get("printstat") ?? AppOptions.get("defaultPrintStat");
     validateFileURL(file);
     const fileInput = this._openFileInput = document.createElement("input");
     fileInput.id = "fileInput";
@@ -15257,13 +15230,13 @@ function getViewerConfiguration() {
       findPreviousButton: document.getElementById("findPreviousButton"),
       findNextButton: document.getElementById("findNextButton")
     },
-    passwordOverlay: {
-      dialog: document.getElementById("passwordDialog"),
-      label: document.getElementById("passwordText"),
-      input: document.getElementById("password"),
-      submitButton: document.getElementById("passwordSubmit"),
-      cancelButton: document.getElementById("passwordCancel")
-    },
+    // passwordOverlay: {
+    //   dialog: document.getElementById("passwordDialog"),
+    //   label: document.getElementById("passwordText"),
+    //   input: document.getElementById("password"),
+    //   submitButton: document.getElementById("passwordSubmit"),
+    //   cancelButton: document.getElementById("passwordCancel")
+    // },
     documentProperties: {
       dialog: document.getElementById("documentPropertiesDialog"),
       closeButton: document.getElementById("documentPropertiesClose"),
@@ -15284,52 +15257,31 @@ function getViewerConfiguration() {
         linearized: document.getElementById("linearizedField")
       }
     },
-    altTextDialog: {
-      dialog: document.getElementById("altTextDialog"),
-      optionDescription: document.getElementById("descriptionButton"),
-      optionDecorative: document.getElementById("decorativeButton"),
-      textarea: document.getElementById("descriptionTextarea"),
-      cancelButton: document.getElementById("altTextCancel"),
-      saveButton: document.getElementById("altTextSave")
-    },
-    newAltTextDialog: {
-      dialog: document.getElementById("newAltTextDialog"),
-      title: document.getElementById("newAltTextTitle"),
-      descriptionContainer: document.getElementById("newAltTextDescriptionContainer"),
-      textarea: document.getElementById("newAltTextDescriptionTextarea"),
-      disclaimer: document.getElementById("newAltTextDisclaimer"),
-      learnMore: document.getElementById("newAltTextLearnMore"),
-      imagePreview: document.getElementById("newAltTextImagePreview"),
-      createAutomatically: document.getElementById("newAltTextCreateAutomatically"),
-      createAutomaticallyButton: document.getElementById("newAltTextCreateAutomaticallyButton"),
-      downloadModel: document.getElementById("newAltTextDownloadModel"),
-      downloadModelDescription: document.getElementById("newAltTextDownloadModelDescription"),
-      error: document.getElementById("newAltTextError"),
-      errorCloseButton: document.getElementById("newAltTextCloseButton"),
-      cancelButton: document.getElementById("newAltTextCancel"),
-      notNowButton: document.getElementById("newAltTextNotNow"),
-      saveButton: document.getElementById("newAltTextSave")
-    },
-    altTextSettingsDialog: {
-      dialog: document.getElementById("altTextSettingsDialog"),
-      createModelButton: document.getElementById("createModelButton"),
-      aiModelSettings: document.getElementById("aiModelSettings"),
-      learnMore: document.getElementById("altTextSettingsLearnMore"),
-      deleteModelButton: document.getElementById("deleteModelButton"),
-      downloadModelButton: document.getElementById("downloadModelButton"),
-      showAltTextDialogButton: document.getElementById("showAltTextDialogButton"),
-      altTextSettingsCloseButton: document.getElementById("altTextSettingsCloseButton"),
-      closeButton: document.getElementById("altTextSettingsCloseButton")
-    },
-    // annotationEditorParams: {
-    //   editorFreeTextFontSize: document.getElementById("editorFreeTextFontSize"),
-    //   editorFreeTextColor: document.getElementById("editorFreeTextColor"),
-    //   editorInkColor: document.getElementById("editorInkColor"),
-    //   editorInkThickness: document.getElementById("editorInkThickness"),
-    //   editorInkOpacity: document.getElementById("editorInkOpacity"),
-    //   // editorStampAddImage: document.getElementById("editorStampAddImage"),
-    //   editorFreeHighlightThickness: document.getElementById("editorFreeHighlightThickness"),
-    //   editorHighlightShowAll: document.getElementById("editorHighlightShowAll")
+    // altTextDialog: {
+    //   dialog: document.getElementById("altTextDialog"),
+    //   optionDescription: document.getElementById("descriptionButton"),
+    //   optionDecorative: document.getElementById("decorativeButton"),
+    //   textarea: document.getElementById("descriptionTextarea"),
+    //   cancelButton: document.getElementById("altTextCancel"),
+    //   saveButton: document.getElementById("altTextSave")
+    // },
+    // newAltTextDialog: {
+    //   dialog: document.getElementById("newAltTextDialog"),
+    //   title: document.getElementById("newAltTextTitle"),
+    //   descriptionContainer: document.getElementById("newAltTextDescriptionContainer"),
+    //   textarea: document.getElementById("newAltTextDescriptionTextarea"),
+    //   disclaimer: document.getElementById("newAltTextDisclaimer"),
+    //   learnMore: document.getElementById("newAltTextLearnMore"),
+    //   imagePreview: document.getElementById("newAltTextImagePreview"),
+    //   createAutomatically: document.getElementById("newAltTextCreateAutomatically"),
+    //   createAutomaticallyButton: document.getElementById("newAltTextCreateAutomaticallyButton"),
+    //   downloadModel: document.getElementById("newAltTextDownloadModel"),
+    //   downloadModelDescription: document.getElementById("newAltTextDownloadModelDescription"),
+    //   error: document.getElementById("newAltTextError"),
+    //   errorCloseButton: document.getElementById("newAltTextCloseButton"),
+    //   cancelButton: document.getElementById("newAltTextCancel"),
+    //   notNowButton: document.getElementById("newAltTextNotNow"),
+    //   saveButton: document.getElementById("newAltTextSave")
     // },
     printContainer: document.getElementById("printContainer"),
     editorUndoBar: {
@@ -15368,5 +15320,3 @@ var __webpack_exports__PDFViewerApplication = __webpack_exports__.PDFViewerAppli
 var __webpack_exports__PDFViewerApplicationConstants = __webpack_exports__.PDFViewerApplicationConstants;
 var __webpack_exports__PDFViewerApplicationOptions = __webpack_exports__.PDFViewerApplicationOptions;
 export { __webpack_exports__PDFViewerApplication as PDFViewerApplication, __webpack_exports__PDFViewerApplicationConstants as PDFViewerApplicationConstants, __webpack_exports__PDFViewerApplicationOptions as PDFViewerApplicationOptions };
-
-//# sourceMappingURL=viewer.mjs.map
