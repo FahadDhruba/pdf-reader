@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 
-export default function Home() {
+export default function ViewerCom({bookid}) {
+  
   const [pdfUrl, setPdfUrl] = useState(null);
   const [progress, setProgress] = useState(0); // State to track progress
   const [isLoading, setIsLoading] = useState(true); // State to track loading status
