@@ -122,85 +122,9 @@
                 </span>
               </div>
               <div id="toolbarViewerRight" class="toolbarHorizontalGroup">
-                <div id="editorModeButtons" class="toolbarHorizontalGroup" role="radiogroup">
-                  <!-- <div id="editorHighlight" class="toolbarButtonWithContainer">
-                    <button id="editorHighlightButton" class="toolbarButton" type="button" disabled="disabled" title="Highlight" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorHighlightParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-highlight-button">
-                      <span data-l10n-id="pdfjs-editor-highlight-button-label">Highlight</span>
-                    </button>
-                    <div class="editorParamsToolbar hidden doorHangerRight" id="editorHighlightParamsToolbar">
-                      <div id="highlightParamsToolbarContainer" class="editorParamsToolbarContainer">
-                        <div id="editorHighlightColorPicker" class="colorPicker">
-                          <span id="highlightColorPickerLabel" class="editorParamsLabel" data-l10n-id="pdfjs-editor-highlight-colorpicker-label">Highlight color</span>
-                        </div>
-                        <div id="editorHighlightThickness">
-                          <label for="editorFreeHighlightThickness" class="editorParamsLabel" data-l10n-id="pdfjs-editor-free-highlight-thickness-input">Thickness</label>
-                          <div class="thicknessPicker">
-                            <input type="range" id="editorFreeHighlightThickness" class="editorParamsSlider" data-l10n-id="pdfjs-editor-free-highlight-thickness-title" value="12" min="8" max="24" step="1" tabindex="0">
-                          </div>
-                        </div>
-                        <div id="editorHighlightVisibility">
-                          <div class="divider"></div>
-                          <div class="toggler">
-                            <label for="editorHighlightShowAll" class="editorParamsLabel" data-l10n-id="pdfjs-editor-highlight-show-all-button-label">Show all</label>
-                            <button id="editorHighlightShowAll" class="toggle-button" type="button" data-l10n-id="pdfjs-editor-highlight-show-all-button" aria-pressed="true" tabindex="0"></button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div> -->
-                  <!-- <div id="editorFreeText" class="toolbarButtonWithContainer">
-                    <button id="editorFreeTextButton" class="toolbarButton" type="button" disabled="disabled" title="Text" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorFreeTextParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-free-text-button">
-                      <span data-l10n-id="pdfjs-editor-free-text-button-label">Text</span>
-                    </button>
-                    <div class="editorParamsToolbar hidden doorHangerRight" id="editorFreeTextParamsToolbar">
-                      <div class="editorParamsToolbarContainer">
-                        <div class="editorParamsSetter">
-                          <label for="editorFreeTextColor" class="editorParamsLabel" data-l10n-id="pdfjs-editor-free-text-color-input">Color</label>
-                          <input type="color" id="editorFreeTextColor" class="editorParamsColor" tabindex="0">
-                        </div>
-                        <div class="editorParamsSetter">
-                          <label for="editorFreeTextFontSize" class="editorParamsLabel" data-l10n-id="pdfjs-editor-free-text-size-input">Size</label>
-                          <input type="range" id="editorFreeTextFontSize" class="editorParamsSlider" value="10" min="5" max="100" step="1" tabindex="0">
-                        </div>
-                      </div>
-                    </div>
-                  </div> -->
-                  <!-- <div id="editorInk" class="toolbarButtonWithContainer">
-                    <button id="editorInkButton" class="toolbarButton" type="button" disabled="disabled" title="Draw" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorInkParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-ink-button">
-                      <span data-l10n-id="pdfjs-editor-ink-button-label">Draw</span>
-                    </button>
-                    <div class="editorParamsToolbar hidden doorHangerRight" id="editorInkParamsToolbar">
-                      <div class="editorParamsToolbarContainer">
-                        <div class="editorParamsSetter">
-                          <label for="editorInkColor" class="editorParamsLabel" data-l10n-id="pdfjs-editor-ink-color-input">Color</label>
-                          <input type="color" id="editorInkColor" class="editorParamsColor" tabindex="0">
-                        </div>
-                        <div class="editorParamsSetter">
-                          <label for="editorInkThickness" class="editorParamsLabel" data-l10n-id="pdfjs-editor-ink-thickness-input">Thickness</label>
-                          <input type="range" id="editorInkThickness" class="editorParamsSlider" value="1" min="1" max="20" step="1" tabindex="0">
-                        </div>
-                        <div class="editorParamsSetter">
-                          <label for="editorInkOpacity" class="editorParamsLabel" data-l10n-id="pdfjs-editor-ink-opacity-input">Opacity</label>
-                          <input type="range" id="editorInkOpacity" class="editorParamsSlider" value="1" min="0.05" max="1" step="0.05" tabindex="0">
-                        </div>
-                      </div>
-                    </div>
-                  </div> -->
-                  <!-- <div id="editorStamp" class="toolbarButtonWithContainer">
-                    <button id="editorStampButton" class="toolbarButton" type="button" disabled="disabled" title="Add or edit images" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorStampParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-stamp-button">
-                      <span data-l10n-id="pdfjs-editor-stamp-button-label">Add or edit images</span>
-                    </button>
-                    <div class="editorParamsToolbar hidden doorHangerRight menu" id="editorStampParamsToolbar">
-                      <div class="menuContainer">
-                        <button id="editorStampAddImage" class="toolbarButton labeled" type="button" title="Add image" tabindex="0" data-l10n-id="pdfjs-editor-stamp-add-image-button">
-                          <span class="editorParamsLabel" data-l10n-id="pdfjs-editor-stamp-add-image-button-label">Add image</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div> -->
-                </div>
+                
 
-                <!-- <div id="editorModeSeparator" class="verticalToolbarSeparator"></div> -->
+                <div id="editorModeSeparator" class="verticalToolbarSeparator"></div>
 
                 <div class="toolbarHorizontalGroup">
                   <button id="printButton" class="toolbarButton" type="button" title="Print" tabindex="0" data-l10n-id="pdfjs-print-button">
