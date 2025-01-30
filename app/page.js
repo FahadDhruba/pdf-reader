@@ -4,13 +4,13 @@ import React, { useEffect, useState } from 'react';
 
 export default function Home() {
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // State to track loading status
 
   useEffect(() => {
-    // Fetch the PDF file from the Next.js API route
     const fetchPdf = async () => {
       try {
-        // Fetch the PDF from the API route
         const response = await fetch('/api/getpdf');
+
         if (!response.ok) {
           throw new Error('Failed to fetch PDF');
         }
@@ -25,6 +25,8 @@ export default function Home() {
         setPdfUrl(pdfUrl);
       } catch (error) {
         console.error('Error fetching PDF:', error);
+      } finally {
+        setIsLoading(false); // Set loading to false when done (success or error)
       }
     };
 
@@ -33,7 +35,6 @@ export default function Home() {
 
   return (
     <main>
-      
       <div className="min-h-screen">
         {pdfUrl ? (
           <iframe
@@ -46,7 +47,17 @@ export default function Home() {
             className="h-screen"
           ></iframe>
         ) : (
-          <p>লোডিং PDF...</p>
+          <div className="flex flex-col items-center justify-center h-screen">
+            {isLoading ? (
+              <>
+                {/* Show loading spinner */}
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-2">লোডিং PDF...</p>
+              </>
+            ) : (
+              <p>Failed to load PDF.</p>
+            )}
+          </div>
         )}
       </div>
     </main>

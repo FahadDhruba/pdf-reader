@@ -2,13 +2,8 @@
 
 <html dir="ltr" mozdisallowselectionprint>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="google" content="notranslate">
-    <title>PDF.js viewer</title>
-
-<!-- This snippet is used in production (included from viewer.html) -->
-<link rel="resource" type="application/l10n" href="locale/locale.json">
+    
+<!-- <link rel="resource" type="application/l10n" href="locale/locale.json"> -->
 <script src="../build/pdf.mjs" type="module"></script>
 
     <link rel="stylesheet" href="viewer.css">
@@ -75,7 +70,7 @@
                       <span id="findResultsCount" class="toolbarLabel"></span>
                       <span id="findMsg" class="toolbarLabel"></span>
                     </div>
-                  </div>  <!-- findbar -->
+                  </div>  
                 </div>
                 <div class="toolbarHorizontalGroup hiddenSmallView">
                   <button class="toolbarButton" title="Previous Page" type="button" id="previous" tabindex="0" data-l10n-id="pdfjs-previous-button">
@@ -151,72 +146,6 @@
       </div> <!-- mainContainer -->
 
       <div id="dialogContainer">
-        
-        <dialog id="documentPropertiesDialog">
-          <div class="row">
-            <span id="fileNameLabel" data-l10n-id="pdfjs-document-properties-file-name">File name:</span>
-            <p id="fileNameField" aria-labelledby="fileNameLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="fileSizeLabel" data-l10n-id="pdfjs-document-properties-file-size">File size:</span>
-            <p id="fileSizeField" aria-labelledby="fileSizeLabel">-</p>
-          </div>
-          <div class="separator"></div>
-          <div class="row">
-            <span id="titleLabel" data-l10n-id="pdfjs-document-properties-title">Title:</span>
-            <p id="titleField" aria-labelledby="titleLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="authorLabel" data-l10n-id="pdfjs-document-properties-author">Author:</span>
-            <p id="authorField" aria-labelledby="authorLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="subjectLabel" data-l10n-id="pdfjs-document-properties-subject">Subject:</span>
-            <p id="subjectField" aria-labelledby="subjectLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="keywordsLabel" data-l10n-id="pdfjs-document-properties-keywords">Keywords:</span>
-            <p id="keywordsField" aria-labelledby="keywordsLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="creationDateLabel" data-l10n-id="pdfjs-document-properties-creation-date">Creation Date:</span>
-            <p id="creationDateField" aria-labelledby="creationDateLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="modificationDateLabel" data-l10n-id="pdfjs-document-properties-modification-date">Modification Date:</span>
-            <p id="modificationDateField" aria-labelledby="modificationDateLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="creatorLabel" data-l10n-id="pdfjs-document-properties-creator">Creator:</span>
-            <p id="creatorField" aria-labelledby="creatorLabel">-</p>
-          </div>
-          <div class="separator"></div>
-          <div class="row">
-            <span id="producerLabel" data-l10n-id="pdfjs-document-properties-producer">PDF Producer:</span>
-            <p id="producerField" aria-labelledby="producerLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="versionLabel" data-l10n-id="pdfjs-document-properties-version">PDF Version:</span>
-            <p id="versionField" aria-labelledby="versionLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="pageCountLabel" data-l10n-id="pdfjs-document-properties-page-count">Page Count:</span>
-            <p id="pageCountField" aria-labelledby="pageCountLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="pageSizeLabel" data-l10n-id="pdfjs-document-properties-page-size">Page Size:</span>
-            <p id="pageSizeField" aria-labelledby="pageSizeLabel">-</p>
-          </div>
-          <div class="separator"></div>
-          <div class="row">
-            <span id="linearizedLabel" data-l10n-id="pdfjs-document-properties-linearized">Fast Web View:</span>
-            <p id="linearizedField" aria-labelledby="linearizedLabel">-</p>
-          </div>
-          <div class="buttonRow">
-            <button id="documentPropertiesClose" class="dialogButton" type="button"><span data-l10n-id="pdfjs-document-properties-close-button">Close</span></button>
-          </div>
-        </dialog>
-        
                 
         <dialog id="printServiceDialog" style="min-width: 200px;">
           <div class="row">
@@ -230,7 +159,7 @@
             <button id="printCancel" class="dialogButton" type="button"><span data-l10n-id="pdfjs-print-progress-close-button">Cancel</span></button>
           </div>
         </dialog>
-      </div>  <!-- dialogContainer -->
+      </div>  
 
       <div id="editorUndoBar" class="messageBar" role="status" aria-labelledby="editorUndoBarMessage" tabindex="-1" hidden>
         <div>
